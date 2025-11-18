@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tambah Lokasi - Zona Boba</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            border: 1px solid #404040;
+        }
+        h1 {
+            color: #ffffff;
+            margin-bottom: 35px;
+            font-size: 2.3em;
+            letter-spacing: 1px;
+        }
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #404040 0%, #2a2a2a 100%);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid #505050;
+            font-weight: 600;
+        }
+        .back-btn:hover {
+            background: linear-gradient(135deg, #505050 0%, #3a3a3a 100%);
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #d0d0d0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #404040;
+            border-radius: 10px;
+            font-size: 1em;
+            background: #252525;
+            color: #e0e0e0;
+            transition: all 0.3s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #606060;
+            background: #2d2d2d;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #707070;
+        }
+        button {
+            background: linear-gradient(135deg, #505050 0%, #3a3a3a 100%);
+            color: white;
+            padding: 14px 35px;
+            border: 1px solid #606060;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #606060 0%, #4a4a4a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,255,255,0.1);
+        }
+        .success {
+            background: linear-gradient(135deg, #3a4a3a 0%, #2a3a2a 100%);
+            color: #b0ffb0;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid #4a5a4a;
+        }
+        .info {
+            background: linear-gradient(135deg, #3a3a4a 0%, #2a2a3a 100%);
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+            border: 1px solid #4a4a5a;
+            color: #c0c0ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="lokasi.php" class="back-btn">← Kembali</a>
+        <h1>Tambah Lokasi Toko</h1>
+
+        <?php
+        if(isset($_POST['submit'])) {
+            include 'koneksi.php';
+            
+            $nama_toko = mysqli_real_escape_string($koneksi, $_POST['nama_toko']);
+            $alamat = mysqli_real_escape_string($koneksi, $_POST['alamat']);
+            $telepon = mysqli_real_escape_string($koneksi, $_POST['telepon']);
+            $jam_buka = mysqli_real_escape_string($koneksi, $_POST['jam_buka']);
+            $google_maps = mysqli_real_escape_string($koneksi, $_POST['google_maps']);
+            
+            $query = "INSERT INTO lokasi (nama_toko, alamat, telepon, jam_buka, google_maps) 
+                     VALUES ('$nama_toko', '$alamat', '$telepon', '$jam_buka', '$google_maps')";
+            
+            if(mysqli_query($koneksi, $query)) {
+                echo "<div class='success'>✅ Lokasi berhasil ditambahkan!</div>";
+                echo "<script>setTimeout(function(){ window.location='lokasi.php'; }, 2000);</script>";
+            }
+            
+            mysqli_close($koneksi);
+        }
+        ?>
+
+        <div class="info">
+            <strong>💡 Tips untuk Google Maps:</strong><br>
+            1. Buka Google Maps<br>
+            2. Cari lokasi toko<br>
+            3. Klik "Share" atau "Bagikan"<br>
+            4. Pilih "Embed a map" atau "Sematkan peta"<br>
+            5. Copy kode iframe dan paste di form
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label>Nama Toko:</label>
+                <input type="text" name="nama_toko" required placeholder="Contoh: Zona Boba Cabang Utama">
+            </div>
+
+            <div class="form-group">
+                <label>Alamat Lengkap:</label>
+                <textarea name="alamat" rows="3" required placeholder="Jl. Contoh No. 123, Kota"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Nomor Telepon:</label>
+                <input type="text" name="telepon" required placeholder="08xx-xxxx-xxxx">
+            </div>
+
+            <div class="form-group">
+                <label>Jam Operasional:</label>
+                <input type="text" name="jam_buka" required placeholder="Senin - Minggu: 09.00 - 21.00">
+            </div>
+
+            <div class="form-group">
+                <label>Google Maps Embed (opsional):</label>
+                <textarea name="google_maps" rows="4" placeholder='<iframe src="..." width="600" height="450"></iframe>'></textarea>
+            </div>
+
+            <button type="submit" name="submit">💾 Simpan Lokasi</button>
+        </form>
+    </div>
+</body>
+</html>
